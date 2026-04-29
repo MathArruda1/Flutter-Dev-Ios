@@ -8,7 +8,7 @@ class SobrePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text("Sobre")),
       body: Center(
-        child: Text("FinControl v1.0\nApp de controle financeiro"),
+        child: Text("FinControl v2.1\nApp de controle financeiro"),
       ),
     );
   }

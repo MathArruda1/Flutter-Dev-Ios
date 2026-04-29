@@ -7,55 +7,69 @@ class LoginPage extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController senhaController = TextEditingController();
 
-void login(BuildContext context) {
-  String email = emailController.text.trim();
-  String senha = senhaController.text.trim();
-
-  if (email.isEmpty && senha.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Preencha os campos de e-mail e senha"),
-      ),
-    );
-    return;
+  bool emailValido(String email) {
+    return RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(email);
   }
 
-  if (email.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Preencha o e-mail"),
-      ),
-    );
-    return;
-  }
+  void login(BuildContext context) {
+    String email = emailController.text.trim();
+    String senha = senhaController.text.trim();
+
+    if (email.isEmpty && senha.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Preencha os campos de e-mail e senha"),
+        ),
+      );
+      return;
+    }
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Preencha o e-mail"),
+        ),
+      );
+      return;
+    }
 
     if (senha.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Preencha a sua senha"),
-      ),
-    );
-    return;
-  }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Preencha a sua senha"),
+        ),
+      );
+      return;
+    }
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => const HomePage()),
-  );
-}
+    // ✅ NOVA VALIDAÇÃO
+    if (!emailValido(email)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Digite um e-mail válido"),
+        ),
+      );
+      return;
+    }
+
+    // ✅ Navegação sem voltar pro login
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center( 
+      body: Center(
         child: Container(
-          width: 300, 
+          width: 300,
           padding: const EdgeInsets.all(20),
           child: Column(
-            mainAxisSize: MainAxisSize.min, 
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const Text(
                 "FinControl IA 💰",
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
@@ -87,7 +101,7 @@ void login(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     "Esqueceu a senha?",
                     style: TextStyle(color: Colors.blue),
                   ),
@@ -96,7 +110,7 @@ void login(BuildContext context) {
                     onPressed: () => login(context),
                     child: const Text(
                       "Entrar",
-                        style: TextStyle(color: Colors.blue),
+                      style: TextStyle(color: Colors.blue),
                     ),
                   ),
                 ],

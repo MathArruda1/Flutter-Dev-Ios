@@ -1,29 +1,51 @@
 import 'package:flutter/material.dart';
+import '../Models/lancamento.dart';
 
 class LancamentosPage extends StatelessWidget {
-  const LancamentosPage({super.key});
+  final List<Lancamento> lista;
+
+  const LancamentosPage({super.key, required this.lista});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AppBar(title: const Text("Lançamentos")),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Lançamentos"),
+      ),
+body: lista.isEmpty
+    ? const Center(child: Text("Nenhum lançamento ainda"))
+    : ListView.builder(
+        itemCount: lista.length,
+        itemBuilder: (context, index) {
+          final item = lista[index];
 
-        const Expanded(
-          child: Center(
-            child: Text("Nenhum lançamento ainda"),
-          ),
-        ),
-      ],
+          return ListTile(
+            leading: Icon(
+              
+              item.isEntrada
+                  ? Icons.arrow_downward
+                  : Icons.arrow_upward,
+              color: item.isEntrada ? Colors.green : Colors.red,
+            ),
+            title: Text(item.item),
+            trailing: Text(
+              "R\$ ${item.valor.toStringAsFixed(2)}",
+            ),
+          );
+        },
+      ),
     );
   }
 }
 
 class AddLancamentoDialog extends StatefulWidget {
-  const AddLancamentoDialog({super.key});
+  final Function(Lancamento) onSalvar;
+
+  const AddLancamentoDialog({super.key, required this.onSalvar});
 
   @override
-  State<AddLancamentoDialog> createState() => _AddLancamentoDialogState();
+  State<AddLancamentoDialog> createState() =>
+      _AddLancamentoDialogState();
 }
 
 class _AddLancamentoDialogState extends State<AddLancamentoDialog> {
@@ -73,20 +95,25 @@ class _AddLancamentoDialogState extends State<AddLancamentoDialog> {
 
       actions: [
         TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
           child: const Text("Cancelar"),
         ),
 
         ElevatedButton(
           onPressed: () {
             String item = itemController.text;
-            String valor = valorController.text;
+            double valor =
+                double.tryParse(valorController.text) ?? 0;
 
-            print("Item: $item");
-            print("Valor: $valor");
-            print(isEntrada ? "Entrada" : "Saída");
+            if (item.isEmpty || valor <= 0) return;
+
+            final lancamento = Lancamento(
+              item: item,
+              valor: valor,
+              isEntrada: isEntrada,
+            );
+
+            widget.onSalvar(lancamento);
 
             Navigator.pop(context);
           },
