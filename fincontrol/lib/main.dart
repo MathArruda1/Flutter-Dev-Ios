@@ -19,7 +19,22 @@ class FinControlApp extends StatelessWidget {
     return MaterialApp(
       title: 'FinControl',
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      // 🔵 ADICIONADO: Configuração do tema global do aplicativo em azul
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.blue,
+          primary: Colors.blue, // Garante que botões e inputs usem azul
+        ),
+        // Configura especificamente os ElevatedButton (como o botão Salvar) para nascerem azuis
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white, // Texto do botão em branco
+          ),
+        ),
+      ),
+      home: const LoginPage(),
     );
   }
 }
